@@ -43,6 +43,9 @@ public class MyClientThread implements Runnable {
 
         /* ::: CREATE THE RESPONSE AND SENT IT OUT OVER THIS.OUT */
 
+        try {
+            this.socket.close();
+        } catch (Exception e) {}
     }
     
 }

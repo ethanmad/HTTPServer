@@ -21,8 +21,8 @@ public class MyHTTPResponse {
     public void setBody(String body) {
         /* ::: SET THE RESPONSE BODY; ALSO A GOOD PLACE TO SET THE Content-Length HEADER ::: */
         this.body = body;
-        setHeader("Contenet-Length", );
-    }gi
+        //setHeader("Content-Length", );
+    }
 
     public String toString() {
         /* ::: CONVERT THE RESPONSE INTO AN HTTP MESSAGE ::: */

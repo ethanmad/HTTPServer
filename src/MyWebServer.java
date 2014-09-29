@@ -42,6 +42,7 @@ public class MyWebServer implements Runnable {
                 System.out.println("Accept failed: " + e);
                 System.exit(1);
             }
+            
         }
     }
     
