@@ -25,23 +25,34 @@ public class MyClientThread implements Runnable {
     
     public void run() {
 
-        MyHTTPRequest req = new MyHTTPRequest();
+        MyHTTPRequest httpRequest = new MyHTTPRequest();
+        MyHTTPResponse httpResponse = null;
 
         /* ::: PROCESS THE HTTP REQUEST FROM THIS.IN HERE ::: */
         while (true) {
             try {
                 String line = in.readLine();
-                if(line == null)break;
-                req.parseRequestLine(line);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                if (line == null) break;
+                String[] lineParts = line.split(" ");
+                if (lineParts[0] != null && lineParts[0].equals("GET")) {
+                    if (lineParts[1] != null && lineParts[1].equals("/")) {
+                        if (lineParts[2] != null && lineParts[2].equals("HTTP/1.1")) {
+                            httpResponse = new MyHTTPResponse(200, "OK");
+                            httpResponse.setBody("<b><i>Connection: " + MyWebServer.numConnections + "</i></b>");
+                            //httpResponse.setHeader();
+                        }
+                    } else { httpResponse = new MyHTTPResponse(404, "Not Found"); }
+                }
+                httpRequest.parseRequestLine(line);
+            } catch (IOException e) { e.printStackTrace(); }
         }
 
 
-        MyHTTPResponse resp = null;
 
-        /* ::: CREATE THE RESPONSE AND SENT IT OUT OVER THIS.OUT */
+
+        /* ::: CREATE THE RESPONSE AND SEND IT OUT OVER THIS.OUT */
+
+        this.out.println(httpResponse.toString());
 
         try {
             this.socket.close();

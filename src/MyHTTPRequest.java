@@ -21,18 +21,7 @@ public class MyHTTPRequest {
     /* Parse an incoming line */
     public void parseRequestLine(String line) {
         /* ::: THIS FUNCTION GETS CALLED FOR EVERY LINE OF THE REQUEST HEADER ::: */
-        String[] lineParts = line.split(" ");
-        if (lineParts[0] != null && lineParts[0].equals("GET")) {
-            if (lineParts[1] != null && lineParts[1].equals("/")) {
-                if (lineParts[2] != null && lineParts[2].equals("HTTP/1.1")) {
-                    MyHTTPResponse response = new MyHTTPResponse(200, "OK");
-                    response.setBody("<b><i>Connection: " + MyWebServer.numConnections + "</i></b>");
-                    //response.setHeader();
-                }
-            } else {
-                MyHTTPResponse response = new MyHTTPResponse(404, "Not Found");
-            }
-        } else parseError();
+        if (line == null) parseError();
     }
 
     /* Is anything wrong with the request? */
