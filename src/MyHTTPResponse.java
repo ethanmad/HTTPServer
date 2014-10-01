@@ -21,14 +21,17 @@ public class MyHTTPResponse {
     public void setBody(String body) {
         /* ::: SET THE RESPONSE BODY; ALSO A GOOD PLACE TO SET THE Content-Length HEADER ::: */
         this.body = body;
-        //setHeader("Content-Length", );
     }
 
     public String toString() {
         /* ::: CONVERT THE RESPONSE INTO AN HTTP MESSAGE ::: */
-        String response = "HTTP/1.1 " + responseCode + " " + responseStatus + "\n" + headers;
-
-
+        String response = "HTTP/1.1 " + responseCode + " " + responseStatus + "\n";
+        Iterator<Map.Entry<String, String>> iter = headers.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry i = iter.next();
+            response += i.getKey() + ": " + i.getValue() + "\n";
+        }
+        response += "\n" + body;
         return response;
     }
 }

@@ -21,7 +21,16 @@ public class MyHTTPRequest {
     /* Parse an incoming line */
     public void parseRequestLine(String line) {
         /* ::: THIS FUNCTION GETS CALLED FOR EVERY LINE OF THE REQUEST HEADER ::: */
-        if (line == null) parseError();
+        if (line == null) { parseError(); return; }
+        if (!line.contains(":")) {
+            String[] lineParts = line.split(" ");
+            method = lineParts[0];
+            url = lineParts[1];
+            protocol = lineParts[2];
+        } else {
+            String[] parts = line.split(": ");
+            headers.put(parts[0], parts[1]);
+        }
     }
 
     /* Is anything wrong with the request? */

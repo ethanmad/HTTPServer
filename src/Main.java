@@ -3,7 +3,7 @@ import java.security.*;
 public class Main {
     
     public static void main(String [] args) {
-        System.setSecurityManager(new SuperRestrictive());
+//        System.setSecurityManager(new SuperRestrictive());
 
         int serverPort = 4000 + (int)(Math.random() * 2000);
 

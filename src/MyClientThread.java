@@ -32,21 +32,19 @@ public class MyClientThread implements Runnable {
         while (true) {
             try {
                 String line = in.readLine();
-                if (line == null) break;
-                String[] lineParts = line.split(" ");
-                if (lineParts[0] != null && lineParts[0].equals("GET")) {
-                    if (lineParts[1] != null && lineParts[1].equals("/")) {
-                        if (lineParts[2] != null && lineParts[2].equals("HTTP/1.1")) {
-                            httpResponse = new MyHTTPResponse(200, "OK");
-                            httpResponse.setBody("<b><i>Connection: " + MyWebServer.numConnections + "</i></b>");
-                            //httpResponse.setHeader();
-                        }
-                    } else { httpResponse = new MyHTTPResponse(404, "Not Found"); }
-                }
+                if (line == null || line.equals("")) break;
                 httpRequest.parseRequestLine(line);
             } catch (IOException e) { e.printStackTrace(); }
         }
 
+        if (httpRequest.url.equals("/")) {
+            httpResponse = new MyHTTPResponse(200, "OK");
+            httpResponse.setBody("<b><i>Connection: " + MyWebServer.numConnections + "</i></b>");
+            httpResponse.setHeader("Content-Length", httpResponse.body.length() + "");
+        } else {
+            httpResponse = new MyHTTPResponse(404, "Page not found");
+            httpResponse.body = "";
+        }
 
 
 
