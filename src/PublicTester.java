@@ -1,9 +1,9 @@
 import java.security.*;
 
-public class Main {
+public class PublicTester {
     
     public static void main(String [] args) {
-//        System.setSecurityManager(new SuperRestrictive());
+        //System.setSecurityManager(new SuperRestrictive());
 
         int serverPort = 4000 + (int)(Math.random() * 2000);
 
@@ -24,21 +24,28 @@ public class Main {
         {
             System.out.println("Trial 1:");
             ClientSimulator sim = new ClientSimulator("localhost", serverPort);
-            sim.requestURL("/");
+            sim.requestURL("/login");
             System.out.println(sim.getResponse());
         }
 
         {
             System.out.println("Trial 2:");
             ClientSimulator sim = new ClientSimulator("localhost", serverPort);
-            sim.requestURL("/");
+            sim.postURL("/auth", "username=test&password=pass");
             System.out.println(sim.getResponse());
         }
 
         {
             System.out.println("Trial 3:");
             ClientSimulator sim = new ClientSimulator("localhost", serverPort);
-            sim.requestURL("/not_a_page");
+            sim.postURL("/auth", "username=test&password=pass2");
+            System.out.println(sim.getResponse());
+        }
+
+        {
+            System.out.println("Trial 4:");
+            ClientSimulator sim = new ClientSimulator("localhost", serverPort);
+            sim.requestURL("/auth");
             System.out.println(sim.getResponse());
         }
 
@@ -68,9 +75,11 @@ class SuperRestrictive extends SecurityManager {
         if (perm.toString().contains("writeFileDescriptor")) return;
         if (perm.toString().contains("readFileDescriptor")) return;
         if (perm.toString().contains("loadLibrary")) return;
-        if (perm.toString().contains("/usr/lib/jvm") && perm.toString().contains("read")) return;
-        if (perm.toString().contains("java.lang.reflect")) return;
+
+		if (perm.toString().contains("/usr/lib/jvm") && perm.toString().contains("read")) return;
+		if (perm.toString().contains("java.lang.reflect.ReflectPermission")) return;
         if (perm.toString().contains("exitVM")) return;
+
 
         /* General */
         if (perm.getName().equals("accessDeclaredMembers")) return;

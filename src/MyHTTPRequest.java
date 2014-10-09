@@ -11,6 +11,7 @@ public class MyHTTPRequest {
 
     /* Track all of the HTTP headers that are sent */
     protected HashMap<String, String> headers = new HashMap<String, String>();
+    protected HashMap<String, String> postVars = new HashMap<String, String>();
 
     /* Use this to track the exact parse error */
     protected String parseError = null;
@@ -21,15 +22,25 @@ public class MyHTTPRequest {
     /* Parse an incoming line */
     public void parseRequestLine(String line) {
         /* ::: THIS FUNCTION GETS CALLED FOR EVERY LINE OF THE REQUEST HEADER ::: */
-        if (line == null) { parseError(); return; }
-        if (!line.contains(":")) {
+        if (line == null) {
+            parseError();
+        } else if (!line.contains(":")) {
             String[] lineParts = line.split(" ");
             method = lineParts[0];
-            url = lineParts[1];
-            protocol = lineParts[2];
+            if (lineParts[1] != null)
+                url = lineParts[1];
+            if (lineParts[2] != null) protocol = lineParts[2];
         } else {
             String[] parts = line.split(": ");
             headers.put(parts[0], parts[1]);
+        }
+    }
+
+    public void parsePost(String post) {
+        String[] postData = post.split("&");
+        for (int i = 0; i < postData.length; i += 1) {
+            String[] postPair = postData[i].split("=");
+            postVars.put(postPair[0], postPair[1]);
         }
     }
 

@@ -27,17 +27,45 @@ public class MyClientThread implements Runnable {
 
         MyHTTPRequest httpRequest = new MyHTTPRequest();
         MyHTTPResponse httpResponse = null;
+        char[] postData;
 
         /* ::: PROCESS THE HTTP REQUEST FROM THIS.IN HERE ::: */
         while (true) {
             try {
                 String line = in.readLine();
-                if (line == null || line.equals("")) break;
+                if (line == null || line.equals("")) {
+                    if (!httpRequest.method.equals("POST")) break;
+                    else {
+                        postData = new char[Integer.parseInt(httpRequest.headers.get("Content-Length"))];
+                        in.read(postData);
+                        httpRequest.parsePost(new String(postData));
+                        break;
+                    }
+                }
                 httpRequest.parseRequestLine(line);
             } catch (IOException e) { e.printStackTrace(); }
         }
 
-        if (httpRequest.url.equals("/")) {
+        if (httpRequest.url.equals("/login")) {
+            httpResponse = new MyHTTPResponse(200, "OK");
+            httpResponse.setBody("<html><body><form method=\"post\" action=\"/auth\"><input type=\"text\" name=\"username\"/><input type=\"password\" name=\"password\"/><input type=\"submit\" /></form></body></html> ");
+            httpResponse.setHeader("Content-Length", httpResponse.body.length() + "");
+        } else if (httpRequest.url.equals("/auth")) {
+            if (httpRequest.method.equals("GET")) {
+                httpResponse = new MyHTTPResponse(302, "Found");
+                httpResponse.setHeader("Location", "/login");
+                httpResponse.setBody("");
+            } else if (httpRequest.method.equals("POST")) {
+                if (httpRequest.postVars.get("username").equals("test") && httpRequest.postVars.get("password").equals("pass")) {
+                    httpResponse = new MyHTTPResponse(200, "OK");
+                    httpResponse.setBody("Good Login!");
+                    httpResponse.setHeader("Content-Length", postData.size() + "");
+                } else {
+                    httpResponse = new MyHTTPResponse(200, "OK");
+                    httpResponse.setBody("Bad Login!");
+                }
+            }
+        } else if (httpRequest.url.equals("/")) {
             httpResponse = new MyHTTPResponse(200, "OK");
             httpResponse.setBody("<b><i>Connection: " + MyWebServer.numConnections + "</i></b>");
             httpResponse.setHeader("Content-Length", httpResponse.body.length() + "");
